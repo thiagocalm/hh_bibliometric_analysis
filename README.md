@@ -1,5 +1,5 @@
 
-# hh_bibliometric_analysis
+# Bibliometrical analysis of "Household Headship"
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -10,4 +10,22 @@ The present exercise has the purpose of implementing Web Scraping dealing with b
 
 With the help of Web Scraping, it is possible to analyze the issues associated with the phenomenon of household responsibility around the world!!!
 
-This work is in progress :)
+**This work is in progress :)**
+
+## Some Results
+
+Although these results need to be evaluated, below we can see some examples that we found until the moment.
+
+- **Number of articles by year in the last 10 years (2011-2022)**:
+
+<p align="center">
+  ![](graphs/number_of_articles_by_year.jpeg)
+</p>
+
+
+- **TOP 10 authors (by number of articles published) in the last 10 years (2011-2022)**:
+
+<p align="center">
+  ![](graphs/top10_authors_in_number_of_articles.png)
+</p>
+
