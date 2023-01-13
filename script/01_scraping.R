@@ -48,15 +48,16 @@ r_article <- httr::GET(
   write_disk(glue::glue("./data/raw/articles/{basename(article_link)}.html"),overwrite = TRUE)
   )
 
-xpaths <- c(
-  title = "//h1[@class = 'wi-article-title article-title-main']",
-  date = "//span[@class = 'article-date']",
-  authors = "//a[@class = 'linked-name js-linked-name stats-author-info-trigger']",
-  infos = "//div[@class = 'ww-citation-primary']",
-  doi = "//div[@class = 'citation-doi']",
-  kw = "//div[@class = 'kwd-group']",
-  abstract = "//p[@class = 'abstract-border']"
-  )
+## Problem here (I need to evaluate it!): xpaths way is not working until now.
+# xpaths <- c(
+#   title = "//h1[@class = 'wi-article-title article-title-main']",
+#   date = "//span[@class = 'article-date']",
+#   authors = "//a[@class = 'linked-name js-linked-name stats-author-info-trigger']",
+#   infos = "//div[@class = 'ww-citation-primary']",
+#   doi = "//div[@class = 'citation-doi']",
+#   kw = "//div[@class = 'kwd-group']",
+#   abstract = "//p[@class = 'abstract-border']"
+#   )
 
 #r_article <- xml2::read_html(glue::glue("data/raw/article_{basename(article_link)}.html"))
 
@@ -236,10 +237,13 @@ download_page_search <- function(pag, search = "headship", prog = NULL) {
   )
 }
 
-#progressr::with_progress({
-#  p <- progressr::progressor(length(page_vector))
-#  purrr::walk(page_vector, download_page_search, prog = p)
-#})
+# Dowloading pages...
+# Idea: here, maybe I can to optimize the processing time.
+
+progressr::with_progress({
+  p <- progressr::progressor(length(page_vector))
+  purrr::walk(page_vector, download_page_search, prog = p)
+})
 
 # Step 7 - To get list of links for MORE THAR ONE page ----------
 
@@ -264,15 +268,17 @@ f_get_link_list <- function(files, prog = NULL) {
 
 }
 
-#link_df <- progressr::with_progress({
-#  p <- progressr::progressor(length(page_vector))
-#  purrr::map(files, f_get_link_list, prog = p) |>
-#    dplyr::bind_rows()
-#})
+link_df <- progressr::with_progress({
+  p <- progressr::progressor(length(page_vector))
+  purrr::map(files, f_get_link_list, prog = p) |>
+    dplyr::bind_rows()
+})
 
-#link_df <- link_df[-1,]
+# There are some links that are duplicated. We can reduce our processing time drop outing.
 
-#saveRDS(link_df, file = "data/dataset/link_df.rds")
+link_df_distinct <- link_df |> distinct()
+
+saveRDS(link_df_distinct, file = "data/dataset/link_df.rds")
 
 # Step 7 - To get ALL of the article contents -----------------------------
 ## REMEMBER ME, here, to put Sys.sleep(1) for spacing the requires.
@@ -288,7 +294,7 @@ f_get_articles_contents_all <- function(link, prog = NULL) {
   r_article <- httr::GET(
     link,
     user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0")
-    #está dando problema no basename
+    #There is a problem here, in the "basename"
     #write_disk(glue::glue("data/raw/articles/{basename(as.vector(link))}.html"), overwrite = TRUE)
   )
 
